@@ -22,7 +22,15 @@ router.get('/me', orderController.orderGetMyAll);
 
 router
   .route('/:id')
-  .patch(orderMiddleware.oneOrder, orderController.orderUpdate)
-  .delete(orderMiddleware.oneOrder, orderController.orderDelete);
+  .patch(
+    orderMiddleware.oneOrder,
+    protectsMiddleware.protectOwner,
+    orderController.orderUpdate
+  )
+  .delete(
+    orderMiddleware.oneOrder,
+    protectsMiddleware.protectOwner,
+    orderController.orderDelete
+  );
 
 module.exports = router;

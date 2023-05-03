@@ -7,6 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 exports.orderCreate = catchAsync(async (req, res, next) => {
   const { quantity, mealId } = req.body;
   const { sessionUser } = req;
+
   const meal = await Meal.findOne({
     where: {
       status: 'active',
@@ -65,16 +66,7 @@ exports.orderGetMyAll = catchAsync(async (req, res, next) => {
 });
 
 exports.orderUpdate = catchAsync(async (req, res, next) => {
-  const { order, sessionUser } = req;
-
-  if (order.userId !== sessionUser.id) {
-    next(
-      new AppError(
-        'Only the user who made the order can only perform these operations',
-        401
-      )
-    );
-  }
+  const { order } = req;
 
   await order.update({
     status: 'completed',
@@ -87,16 +79,8 @@ exports.orderUpdate = catchAsync(async (req, res, next) => {
 });
 
 exports.orderDelete = catchAsync(async (req, res, next) => {
-  const { order, sessionUser } = req;
+  const { order } = req;
 
-  if (order.userId !== sessionUser.id) {
-    next(
-      new AppError(
-        'Only the user who made the order can only perform these operations',
-        401
-      )
-    );
-  }
   await order.update({
     status: 'cancelled',
   });

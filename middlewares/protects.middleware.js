@@ -39,15 +39,29 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.protectOwner = catchAsync(async (req, res, next) => {
-  const { sessionUser, user, review } = req;
+  const { sessionUser, user, review, order } = req;
 
   if (user) {
     if (sessionUser.id !== user.id) {
       next(new AppError('you do not own this account', 401));
     }
-  } else {
+  } else if (review) {
     if (sessionUser.id !== review.userId) {
-      next(new AppError('you do not own this account', 401));
+      next(
+        new AppError(
+          'Only the user who made the order can only perform these operations',
+          401
+        )
+      );
+    }
+  } else {
+    if (sessionUser.id !== order.userId) {
+      next(
+        new AppError(
+          'Only the user who made the order can only perform these operations',
+          401
+        )
+      );
     }
   }
   next();
